@@ -16,6 +16,9 @@ namespace eBooking.Domain
       public string? Description {get; set;}
       public DateTime Date {get; set;}
       public decimal Cost {get; set;}
+
+      public DateTime CreatedAt { get; set; } 
+      public DateTime UpdatedAt { get; set; }
       public IEnumerable<Booking> Bookings {get; set;} = [];
     }
 } 
