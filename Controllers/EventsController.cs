@@ -28,9 +28,13 @@ namespace eBooking.Controllers
         public async Task<IActionResult> GetEventById(int id)
         {
             var response = await _eventService.GetEventByIdAsync(id);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
             return Ok(response);
         }
-       
        
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
@@ -39,14 +43,19 @@ namespace eBooking.Controllers
             return Ok(response);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventDTO eventDto)
         {
             var response = await _eventService.UpdateEventAsync(id, eventDto);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
             return Ok(response);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
             await _eventService.DeleteEventAsync(id);

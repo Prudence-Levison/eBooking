@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using eBooking.Interfaces;
 using eBooking.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<EventCreateValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EventUpdateValidator>();
 builder.Services.AddIdentity<User, ApplicationRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -32,6 +37,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(ctx =>
     ctx.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
