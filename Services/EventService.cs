@@ -16,34 +16,8 @@ namespace eBooking.Services
             _context = context;
         }
 
-        public async Task<int> CreateEventAsync(CreateEventDTO eventDto)
+        public async Task<int> CreateAsync(CreateEventDTO eventDto)
         {
-            // if (string.IsNullOrEmpty(eventDto.Title))
-            // {
-            //     throw new ArgumentException("Event title is required.");
-            // }
-            // if (eventDto.Date < DateTime.Now)
-            // {
-            //     throw new ArgumentException("Event date must be in the future.");
-
-            // }
-            
-         // what happens if available ticket and total tickets are not same value, should we allow that?
-        //  How to validate that the available tickets should not be more than total tickets, and also should not be less than zero
-        //  How can we validate that the total tickets should not be less than zero
-        // What are other possible validations we can add for creating an event?
-        
-        // if (eventDto.AvailableTickets > eventDto.TotalTickets){
-        //     throw new ArgumentException("Availabe Ticket must not be greater than Total Tickets");
-        // };
-        //     if(eventDto.AvailableTickets  < 0 || eventDto.TotalTickets  < 0)
-        //     {
-        //         throw new ArgumentException("Available tickets and total tickets must be greater than zero.");
-        //     }
-        //     if(eventDto.AvailableTickets > eventDto.TotalTickets)
-        //     {
-        //         throw new ArgumentException("Available tickets cannot be more than total tickets.");
-        //     }
             var newEvent = new Event
             {
                 Title = eventDto.Title,
@@ -61,14 +35,13 @@ namespace eBooking.Services
             await _context.SaveChangesAsync();
             return newEvent.Id;
         }
-        public async Task<Eventdto> GetEventByIdAsync(int id)
+        public async Task<Eventdto> GetByIdAsync(int id)
         {
             var eventData = await _context.Events.FindAsync(id);
 
             if (eventData == null)
             {
             throw new KeyNotFoundException($"Event with ID {id} not found.");
-                
             }
             return new Eventdto
             {
@@ -86,7 +59,7 @@ namespace eBooking.Services
                 UpdatedAt = eventData.UpdatedAt
             };
         }
-        public async Task<IEnumerable<Eventdto>> GetAllEventsAsync()
+        public async Task<IEnumerable<Eventdto>> GetAllAsync()
         {
             return await _context.Events
             .Select(e => new Eventdto 
@@ -105,10 +78,9 @@ namespace eBooking.Services
                 UpdatedAt = e.UpdatedAt
             }).ToListAsync();
         }  
-        public  async Task<Eventdto> UpdateEventAsync(int id, UpdateEventDTO eventDto)  
+        public  async Task<Eventdto> UpdateAsync(int id, UpdateEventDTO eventDto)  
         {
             var existingEvent = await _context.Events.FindAsync(id);
-
             if (existingEvent == null)
             {
                 return null;
@@ -144,7 +116,7 @@ namespace eBooking.Services
             };
         }
 
-        public async Task DeleteEventAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var eventToDelete = await _context.Events.FindAsync(id);
 

@@ -4,10 +4,10 @@ namespace eBooking.Interfaces
 {
     public interface IEventService
     {
-        Task<int> CreateEventAsync(CreateEventDTO eventDto);
-        Task<Eventdto> GetEventByIdAsync(int id);
-        Task<IEnumerable<Eventdto>> GetAllEventsAsync();
-        Task<Eventdto> UpdateEventAsync(int id, UpdateEventDTO eventDto);
-        Task DeleteEventAsync(int id);
+        Task<int> CreateAsync(CreateEventDTO eventDto);
+        Task<Eventdto> GetByIdAsync(int id);
+        Task<IEnumerable<Eventdto>> GetAllAsync();
+        Task<Eventdto> UpdateAsync(int id, UpdateEventDTO eventDto);
+        Task DeleteAsync(int id);
     }    
 }

@@ -10,7 +10,7 @@ namespace eBooking.Domain
       public int AvailableTickets {get; set;}
       public int TotalTickets {get; set;}
       public required string Title { get; set;}
-      public string? Location {get; set;}
+      public string Location {get; set;} = null!;
       public string? Theme {get; set;}
       public EventStatus Status {get; set;} = EventStatus.Upcoming; 
       public string? Description {get; set;}

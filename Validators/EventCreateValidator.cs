@@ -8,17 +8,13 @@ using  eBooking.DTO;
         .NotEmpty()
         .WithMessage("Available Ticket must not be empty ");
 
-        RuleFor(x => x. AvailableSeats)
-        .NotEmpty()
-        .WithMessage("Available Seats must not be empty ");
-
         RuleFor(x => x.AvailableSeats)
         .GreaterThanOrEqualTo(0)
         .WithMessage("Available Seats must be a non-negative number");
 
         RuleFor(x => x.AvailableTickets)
-        .GreaterThan(x => x.TotalTickets)
-        .WithMessage("Avalable Tickets must be less than Total Tickets");
+        .LessThanOrEqualTo(x => x.TotalTickets)
+        .WithMessage("Available Tickets must be less than or equal to Total Tickets");
 
         RuleFor(x => x.Date)
         .GreaterThan(DateTime.UtcNow)
@@ -35,14 +31,12 @@ using  eBooking.DTO;
         RuleFor(x => x.Title)
         .NotEmpty()
         .Must(x => x.ToLower() != "string")
-        .WithMessage("Title must be meaningful")
-        .WithMessage("Title is required");
+        .WithMessage("Title is required and must be meaningful");
 
         RuleFor(x => x.Location)
         .NotEmpty()
         .Must(x => x.ToLower() != "string")
-        .WithMessage("Location must be meaningful")
-        .WithMessage("Location is required");
+        .WithMessage("Location is required and must be meaningful");
 
         RuleFor(x => x.Cost)
         .GreaterThanOrEqualTo(0);
@@ -50,7 +44,6 @@ using  eBooking.DTO;
         RuleFor(x => x.Description)
         .MaximumLength(1000)
         .Must(x => x.ToLower() != "string")
-        .WithMessage("Description must be meaningful")
-        .WithMessage("Description must not exceed 1000 characters");     
+        .WithMessage("Description must not exceed 1000 characters and must be meaningful");     
     }
  }
