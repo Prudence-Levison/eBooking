@@ -6,13 +6,11 @@ using eBooking.DTO;
 
 namespace eBooking.Data
  {
- 
  public class ApplicationDbContext : IdentityDbContext<User, ApplicationRole, Guid>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
-
     public DbSet<Event> Events { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
@@ -44,4 +42,4 @@ namespace eBooking.Data
             .HasForeignKey(th => th.WalletId);
     }
 }
- }
+}

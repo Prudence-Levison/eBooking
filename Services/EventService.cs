@@ -3,6 +3,7 @@ using eBooking.Data;
 using eBooking.Domain;
 using eBooking.DTO;
 using eBooking.Interfaces;
+using eBooking.Wrappers;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,9 +60,18 @@ namespace eBooking.Services
                 UpdatedAt = eventData.UpdatedAt
             };
         }
-        public async Task<IEnumerable<Eventdto>> GetAllAsync()
+        public async Task<PaginatedResult<Eventdto>> GetAllAsync(int page, int limit)
         {
-            return await _context.Events
+            var query = _context.Events.AsQueryable();
+
+            var totalEvents = await query.CountAsync();
+
+            query = query.OrderBy(e => e.Id);
+
+            var events = await query
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            
             .Select(e => new Eventdto 
             {
                 Id = e.Id,
@@ -77,6 +87,15 @@ namespace eBooking.Services
                 CreatedAt = e.CreatedAt,
                 UpdatedAt = e.UpdatedAt
             }).ToListAsync();
+
+            return new PaginatedResult<Eventdto>
+            {
+                Pages = page,
+                Limit = limit,
+                TotalEvents = totalEvents,
+                TotalPages = (int)Math.Ceiling(totalEvents / (double)limit),
+                Data = events
+            };
         }  
         public  async Task<Eventdto> UpdateAsync(int id, UpdateEventDTO eventDto)  
         {

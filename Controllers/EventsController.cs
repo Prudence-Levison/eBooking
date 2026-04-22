@@ -1,9 +1,9 @@
 using eBooking.Data;
 using eBooking.DTO;
 using eBooking.Interfaces;
+using eBooking.Wrappers;
 using eBooking.Services;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace eBooking.Controllers
 {
@@ -37,9 +37,9 @@ namespace eBooking.Controllers
         }
        
         [HttpGet]
-        public async Task<IActionResult> GetAllEvents()
+        public async Task<IActionResult> GetAllEvents( int page = 1, int limit = 10)
         {
-            var response = await _eventService.GetAllAsync();
+            var response = await _eventService.GetAllAsync(page, limit);
             return Ok(response);
         }
 

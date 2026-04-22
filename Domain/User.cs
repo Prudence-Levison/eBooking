@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eBooking.Domain
 {
-    public class User : IdentityUser<Guid>
+        public class User : IdentityUser<Guid>
     {
         public required string FirstName { get; set;}
         public required string LastName { get; set;}
@@ -17,7 +17,6 @@ namespace eBooking.Domain
         {
             Id = Guid.NewGuid();
             ConcurrencyStamp = Guid.NewGuid().ToString();
-
         }
     }
 }
