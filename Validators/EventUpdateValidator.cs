@@ -5,46 +5,59 @@ public class EventUpdateValidator : AbstractValidator<UpdateEventDTO>
 {
     public EventUpdateValidator()
     {
-        RuleFor (x => x.AvailableTickets)
-        .NotEmpty()
-        .WithMessage("Available Ticket must not be empty ");
+        When(x => x.AvailableTickets.HasValue, () =>
+        {
+            RuleFor(x => x.AvailableTickets.Value)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Available Tickets must be a non-negative number");
+        });
 
-        RuleFor(x => x.AvailableSeats)
-        .GreaterThanOrEqualTo(0)
-        .WithMessage("Available Seats must be a non-negative number");
+        When(x => x.AvailableSeats.HasValue, () =>
+        {
+            RuleFor(x => x.AvailableSeats.Value)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Available Seats must be a non-negative number");
+        });
 
-        RuleFor(x => x.AvailableTickets)
-        .LessThanOrEqualTo(x => x.TotalTickets)
-        .WithMessage("Available Tickets must be less than or equal to Total Tickets");
+        When(x => x.TotalTickets.HasValue, () =>
+        {
+            RuleFor(x => x.TotalTickets.Value)
+                .GreaterThan(0)
+                .WithMessage("Total Tickets must be greater than zero");
+        });
 
-        RuleFor(x => x.Date)
-        .GreaterThan(DateTime.UtcNow)
-        .WithMessage("Event Date must be in the future");
+        When(x => !string.IsNullOrWhiteSpace(x.Title), () =>
+        {
+            RuleFor(x => x.Title)
+                .MaximumLength(200)
+                .WithMessage("Title is too long");
+        });
 
-        RuleFor(x => x.TotalTickets)
-        .GreaterThan(0)
-        .WithMessage("Total Tickets must be greater than zero");
+        When(x => !string.IsNullOrWhiteSpace(x.Location), () =>
+        {
+            RuleFor(x => x.Location)
+                .MaximumLength(200)
+                .WithMessage("Location is required and must be meaningful");
+        });
 
-        RuleFor(x => x.AvailableTickets)
-        .GreaterThanOrEqualTo(0)
-        .WithMessage("Available Tickets must be a non-negative number");
+        When(x => x.Cost.HasValue, () =>
+        {
+            RuleFor(x => x.Cost.Value)
+                .GreaterThanOrEqualTo(0);
+        });
 
-        RuleFor(x => x.Title)
-        .NotEmpty()
-        .Must(x => x.ToLower() != "string")
-        .WithMessage("Title is required and must be meaningful");
+        When(x => !string.IsNullOrWhiteSpace(x.Description), () =>
+        {
+            RuleFor(x => x.Description)
+                .MaximumLength(1000)
+                .WithMessage("Description must not exceed 1000 characters");
+        });
 
-        RuleFor(x => x.Location)
-        .NotEmpty()
-        .Must(x => x.ToLower() != "string")
-        .WithMessage("Location is required and must be meaningful");
-
-        RuleFor(x => x.Cost)
-        .GreaterThanOrEqualTo(0);
-
-        RuleFor(x => x.Description)
-        .MaximumLength(1000)
-        .Must(x => x.ToLower() != "string")
-        .WithMessage("Description must not exceed 1000 characters and must be meaningful"); 
+        When(x => x.Date.HasValue, () =>
+        {
+            RuleFor(x => x.Date.Value)
+                .GreaterThan(DateTime.UtcNow)
+                .WithMessage("Event Date must be in the future");
+        });
     }
 }

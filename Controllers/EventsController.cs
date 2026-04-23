@@ -43,7 +43,7 @@ namespace eBooking.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventDTO eventDto)
         {
             var response = await _eventService.UpdateAsync(id, eventDto);

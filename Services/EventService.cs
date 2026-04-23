@@ -62,7 +62,9 @@ namespace eBooking.Services
         }
         public async Task<PaginatedResult<Eventdto>> GetAllAsync(int page, int limit)
         {
-            var query = _context.Events.AsQueryable();
+            var query = _context.Events
+            .AsNoTracking()
+            .AsQueryable();
 
             var totalEvents = await query.CountAsync();
 
@@ -102,18 +104,36 @@ namespace eBooking.Services
             var existingEvent = await _context.Events.FindAsync(id);
             if (existingEvent == null)
             {
-                return null;
+                throw new KeyNotFoundException($"Event with ID {id} not found.");
             }
-            
+
+            if (eventDto.Title != null)
             existingEvent.Title = eventDto.Title;
+
+            if (eventDto.Location != null)
             existingEvent.Location = eventDto.Location;
+
+            if (eventDto.Theme != null)
             existingEvent.Theme = eventDto.Theme;  
+
+            if (eventDto.Description != null)
             existingEvent.Description = eventDto.Description;
-            existingEvent.Date = eventDto.Date;
-            existingEvent.Cost = eventDto.Cost;
-            existingEvent.AvailableSeats = eventDto.AvailableSeats;
-            existingEvent.AvailableTickets = eventDto.AvailableTickets;
-            existingEvent.TotalTickets = eventDto.TotalTickets;
+
+            if (eventDto.Date.HasValue)
+            existingEvent.Date = eventDto.Date.Value;
+
+            if (eventDto.Cost.HasValue)
+            existingEvent.Cost = eventDto.Cost.Value;
+
+            if (eventDto.AvailableSeats.HasValue)
+            existingEvent.AvailableSeats = eventDto.AvailableSeats.Value;
+
+            if (eventDto.AvailableTickets.HasValue)
+            existingEvent.AvailableTickets = eventDto.AvailableTickets.Value;
+
+            if (eventDto.TotalTickets.HasValue)
+            existingEvent.TotalTickets = eventDto.TotalTickets.Value;
+
             existingEvent.UpdatedAt = DateTime.UtcNow;
             
             await _context.SaveChangesAsync();
