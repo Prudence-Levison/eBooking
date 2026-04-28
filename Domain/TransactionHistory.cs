@@ -5,14 +5,14 @@ namespace eBooking.Domain
     public class TransactionHistory
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public int EventId { get; set; }
-        public Event? Event { get; set; } // Navigation property to access the associated event details.
+        public Event Event { get; set; } // Navigation property to access the associated event details.
 
         public int WalletId { get; set; }
 
-        public Wallet? Wallet { get; set; } // Navigation property to access the associated wallet details.
+        public Wallet Wallet { get; set; } // Navigation property to access the associated wallet details.
 
         public int TotalTransactions { get; set; }
 
