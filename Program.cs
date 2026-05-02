@@ -17,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IWalletServices, WalletServices>();  
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<EventCreateValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EventUpdateValidator>();
