@@ -57,7 +57,7 @@ public  class WalletServices : IWalletServices
                 WalletId = wallet.Id,
                 Amount = amount,
                 Status = PaymentStatus.Successful,
-                PaymentMethod = "Wallet",
+                PaymentMethod = "Card", // Assuming top-up is done via card, this can be dynamic based on actual payment method used.
                 TransactionType = "Credit",
                 Description = $"Wallet top-up of {amount} naira",
                 TransactionDate = DateTime.UtcNow,
