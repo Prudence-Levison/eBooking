@@ -1,4 +1,7 @@
+using System.Transactions;
 using eBooking.Data;
+using eBooking.Domain;
+using eBooking.Enums;
 using eBooking.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +51,19 @@ public  class WalletServices : IWalletServices
         
             var wallet = await EnsureWalletExistsAsync(UserId);
             wallet.Balance += amount;
+            var transactionHistory = new TransactionHistory
+            {
+                UserId = UserId,
+                WalletId = wallet.Id,
+                Amount = amount,
+                Status = PaymentStatus.Successful,
+                PaymentMethod = "Wallet",
+                TransactionType = "Credit",
+                Description = $"Wallet top-up of {amount} naira",
+                TransactionDate = DateTime.UtcNow,
+                ReferenceNumber = Guid.NewGuid().ToString() // Generate a unique reference number for the transaction.
+            };
+            _context.TransactionHistories.Add(transactionHistory);
             _context.Wallets.Update(wallet);
             await _context.SaveChangesAsync();
             return wallet;   
@@ -64,6 +80,19 @@ public  class WalletServices : IWalletServices
             throw new Exception("Insufficient Funds");
         }
         wallet.Balance -= amount;
+        var transactionHistory = new TransactionHistory
+        {
+            UserId = UserId,
+            WalletId = wallet.Id,
+            Amount = amount,
+            Status = PaymentStatus.Successful,
+            PaymentMethod = "Wallet",
+            TransactionType = "Debit",
+            Description = $"Wallet debit of {amount} naira",
+            TransactionDate = DateTime.UtcNow,
+            ReferenceNumber = Guid.NewGuid().ToString() // Generate a unique reference number for the transaction.
+        };
+        _context.TransactionHistories.Add(transactionHistory);
         _context.Wallets.Update(wallet);
         await _context.SaveChangesAsync();
         return wallet;
