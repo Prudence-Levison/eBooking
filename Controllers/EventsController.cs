@@ -61,5 +61,6 @@ namespace eBooking.Controllers
             await _eventService.DeleteAsync(id);
             return Ok();
         }
+        
     }
 }
