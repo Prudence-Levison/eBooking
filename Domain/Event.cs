@@ -18,6 +18,10 @@ namespace eBooking.Domain
       public decimal Cost {get; set;}
       public DateTime CreatedAt { get; set; } 
       public DateTime UpdatedAt { get; set; }
+
+      public Guid OrganizerId {get; set;}
+
+      public  User Organizer {get; set;}  = null!;
       public IEnumerable<Booking> Bookings {get; set;} = [];
     }
 } 

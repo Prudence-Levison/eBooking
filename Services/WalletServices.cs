@@ -36,39 +36,38 @@ public  class WalletServices : IWalletServices
                UserId = UserId,
                Balance = 0
            };
-           _context.Wallets.Add(wallet);
+           await _context.Wallets.AddAsync(wallet);
            await _context.SaveChangesAsync();
         }
         return wallet;
     }
     public async Task<Wallet>TopUpWalletAsync(Guid UserId, decimal amount)
     {
+        if (amount <= 0)
         {
-            if (amount <= 0)
-            {
-                throw new ArgumentException("Amount must be greater than zero.");
-            }
-        
-            var wallet = await EnsureWalletExistsAsync(UserId);
-            wallet.Balance += amount;
-            var transactionHistory = new TransactionHistory
-            {
-                UserId = UserId,
-                WalletId = wallet.Id,
-                Amount = amount,
-                Status = PaymentStatus.Successful,
-                PaymentMethod = "Card", // Assuming top-up is done via card, this can be dynamic based on actual payment method used.
-                TransactionType = "Credit",
-                Description = $"Wallet top-up of {amount} naira",
-                TransactionDate = DateTime.UtcNow,
-                ReferenceNumber = Guid.NewGuid().ToString() // Generate a unique reference number for the transaction.
-            };
-            _context.TransactionHistories.Add(transactionHistory);
-            _context.Wallets.Update(wallet);
-            await _context.SaveChangesAsync();
-            return wallet;   
-        }}
-        public async Task<Wallet> DebitWalletAsync(Guid UserId, decimal amount)
+            throw new ArgumentException("Amount must be greater than zero.");
+        }
+    
+        var wallet = await EnsureWalletExistsAsync(UserId);
+        wallet.Balance += amount;
+        var transactionHistory = new TransactionHistory
+        {
+            UserId = UserId,
+            WalletId = wallet.Id,
+            Amount = amount,
+            Status = PaymentStatus.Successful,
+            PaymentMethod = "Card", // Assuming top-up is done via card, this can be dynamic based on actual payment method used.
+            TransactionType = "Credit",
+            Description = $"Wallet top-up of {amount} naira",
+            TransactionDate = DateTime.UtcNow,
+            ReferenceNumber = Guid.NewGuid().ToString() // Generate a unique reference number for the transaction.
+        };
+        await _context.TransactionHistories.AddAsync(transactionHistory);
+        _context.Wallets.Update(wallet);
+        await _context.SaveChangesAsync();
+        return wallet;   
+    }
+    public async Task<Wallet> DebitWalletAsync(Guid UserId, decimal amount)
     {
         if (amount <=0)
         {
@@ -92,7 +91,7 @@ public  class WalletServices : IWalletServices
             TransactionDate = DateTime.UtcNow,
             ReferenceNumber = Guid.NewGuid().ToString() // Generate a unique reference number for the transaction.
         };
-        _context.TransactionHistories.Add(transactionHistory);
+       await _context.TransactionHistories.AddAsync(transactionHistory);
         _context.Wallets.Update(wallet);
         await _context.SaveChangesAsync();
         return wallet;
