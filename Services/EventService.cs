@@ -136,6 +136,8 @@ namespace eBooking.Services
 
             existingEvent.UpdatedAt = DateTime.UtcNow;
             
+             _context.Events.Update(existingEvent);
+            
             await _context.SaveChangesAsync();
 
             return new Eventdto
