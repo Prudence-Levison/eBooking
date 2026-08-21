@@ -1,6 +1,7 @@
 using eBooking.Data;
 using eBooking.DTO;
 using eBooking.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using eBooking.Wrappers;
 using eBooking.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace eBooking.Controllers
         {
             _eventService = eventServices;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDTO eventDto)
         {
@@ -43,6 +44,7 @@ namespace eBooking.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventDTO eventDto)
         {
@@ -55,6 +57,7 @@ namespace eBooking.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
