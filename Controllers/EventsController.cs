@@ -36,6 +36,7 @@ namespace eBooking.Controllers
             }
             return Ok(response);
         }
+        
        
         [HttpGet]
         public async Task<IActionResult> GetAllEvents( int page = 1, int limit = 10)

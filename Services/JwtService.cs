@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
-
 public class JwtService : IJwtService
 {
     private readonly IConfiguration _configuration;
@@ -41,6 +40,5 @@ public class JwtService : IJwtService
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(token);
     
-    }
-    
+    }  
 }

@@ -31,8 +31,6 @@ public class RoleService : IRoleService
             throw new Exception("Failed to create role");
         }
     }
-
-    
     public async Task AddToRole(Guid userId, string roleName)
     {
         var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -40,26 +38,20 @@ public class RoleService : IRoleService
         {
             throw new Exception("User not found");
         }
-
         var roleExists = await _roleManager.RoleExistsAsync(roleName);
         if (!roleExists)
         {
             throw new Exception("Role does not exist");
         }
-
         var userAlreadyInRole = await _userManager.IsInRoleAsync(user, roleName);
         if (userAlreadyInRole)
         {
             throw new Exception("User is already in the role");
         }
-
         var result = await _userManager.AddToRoleAsync(user, roleName);
-
-       
-        if (!result.Succeeded)
+         if (!result.Succeeded)
         {
             throw new Exception("Failed to add user to role");
         }
     }
-
 }
