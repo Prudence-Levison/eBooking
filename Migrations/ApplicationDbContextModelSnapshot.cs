@@ -151,7 +151,7 @@ namespace eBooking.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Wallets");
+                    b.ToTable("Wallets", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.ApplicationRole", b =>
@@ -214,7 +214,7 @@ namespace eBooking.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.Event", b =>
@@ -268,7 +268,7 @@ namespace eBooking.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.TransactionHistory", b =>
@@ -321,7 +321,7 @@ namespace eBooking.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("TransactionHistories");
+                    b.ToTable("TransactionHistories", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.User", b =>

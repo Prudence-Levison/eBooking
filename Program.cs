@@ -23,6 +23,8 @@ builder.Services.AddScoped<IWalletServices, WalletServices>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<EventCreateValidator>();

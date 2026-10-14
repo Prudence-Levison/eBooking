@@ -18,7 +18,7 @@ namespace eBooking.Domain
       public decimal Cost {get; set;}
       public DateTime CreatedAt { get; set; } 
       public DateTime UpdatedAt { get; set; }
-
+      public byte[] RowVersion { get; set; }
       public Guid OrganizerId {get; set;}
 
       public  User Organizer {get; set;}  = null!;

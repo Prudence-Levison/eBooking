@@ -23,6 +23,7 @@ public class BookingService:IBookingService
 
     public async Task<BookingDTO> CreateBookingAsync(CreateBookingDTO bookingDto)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
         var userIdClaim = _httpContextAccessor.HttpContext?
         .User
         .FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -38,16 +39,7 @@ public class BookingService:IBookingService
         {
             throw new Exception("Event not found.");
         }
-        if (eventItem.AvailableTickets < bookingDto.NumberOfTickets)
-        {
-        throw new Exception("Not enough tickets available.");
-        }  
-
-        if (eventItem.AvailableSeats < bookingDto.NumberOfTickets)
-        {
-        throw new Exception("Not enough seats available.");
-        }
-        
+          
         var booking = new Booking
         {
             UserId = userId,
@@ -56,16 +48,31 @@ public class BookingService:IBookingService
             TotalCost = eventItem.Cost * bookingDto.NumberOfTickets,
             Status = eBooking.Enums.BookingStatus.Pending,
             CreatedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow.AddHours(2) // Set expiration time to 2 hours from now
+            ExpiresAt = DateTime.UtcNow.AddHours(2) 
         };
-        eventItem.AvailableTickets -= bookingDto.NumberOfTickets;
-        eventItem.AvailableSeats -= bookingDto.NumberOfTickets;
+        var affectedRows = await _context.Events
+       .Where(e => e.Id == bookingDto.EventId
+        && e.AvailableTickets >= bookingDto.NumberOfTickets
+        && e.AvailableSeats >= bookingDto.NumberOfTickets)
+       .ExecuteUpdateAsync(setters => setters
+        .SetProperty(e => e.AvailableTickets,
+            e => e.AvailableTickets - bookingDto.NumberOfTickets)
+        .SetProperty(e => e.AvailableSeats,
+            e => e.AvailableSeats - bookingDto.NumberOfTickets));
+
+        if (affectedRows == 0)
+   {
+        throw new Exception(
+        "Event not found or insufficient tickets or seats available.");
+ }
         _context.Bookings.Add(booking);
         await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
         return new BookingDTO
         {
             Id = booking.Id,
             EventId = booking.EventId,
+            EventTitle = eventItem.Title,
             NumberOfTickets = booking.NumberOfTickets,
             TotalCost = booking.TotalCost,
             Status = booking.Status,

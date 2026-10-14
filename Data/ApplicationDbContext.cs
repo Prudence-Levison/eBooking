@@ -19,8 +19,9 @@ namespace eBooking.Data
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Configure relationships and constraints if needed
+        modelBuilder.Entity<Event>()
+        .Property(e => e.RowVersion)
+        .IsRowVersion();
         modelBuilder.Entity<Event>()
         .HasMany(e => e.Bookings)
         .WithOne(b=> b.Event)
