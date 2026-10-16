@@ -32,5 +32,16 @@ namespace eBooking.Controllers
             }
             return Ok(booking);
         }
+        [HttpGet]
+         public async Task<IActionResult> GetAllBookings()
+        {
+            var bookings = await _bookingService.GetAllBookingsAsync();
+            if (bookings == null)
+            {
+                return NotFound();
+            }
+            return Ok(bookings);  
+        }
     }
+    
 }

@@ -15,10 +15,34 @@ public class BookingService:IBookingService
         _context = context;
         _httpContextAccessor = httpContextAccessor;
     }
-
-    public Task CancelBookingAsync(int id)
+    public async Task CancelBookingAsync(int id)
     {
-        throw new NotImplementedException();
+        var userIdClaim = _httpContextAccessor.HttpContext?
+        .User
+        .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if(userIdClaim == null)
+        {
+            throw new Exception("User is not authenticated.");
+        }
+        var userId = Guid.Parse(userIdClaim);
+        var booking = await _context.Bookings
+        .Where(b => b.Id == id && b.UserId == userId)
+        .FirstOrDefaultAsync();
+        if (booking == null)
+        {
+            throw new Exception("Booking not found.");
+        }
+        if (booking.Status != eBooking.Enums.BookingStatus.Pending)
+        {
+            throw new Exception("Only pending bookings can be cancelled.");
+        }
+        var eventItem = await _context.Events.FindAsync(booking.EventId);
+        if (eventItem == null)
+        {
+            throw new Exception("Event not found.");
+        }
+
+
     }
 
     public async Task<BookingDTO> CreateBookingAsync(CreateBookingDTO bookingDto)
@@ -81,13 +105,66 @@ public class BookingService:IBookingService
         };
     }
 
-    public Task<IEnumerable<BookingDTO>> GetAllBookingsAsync()
+    public async Task<IEnumerable<BookingDTO>> GetAllBookingsAsync()
     {
-        throw new NotImplementedException();
+        var userIdClaim = _httpContextAccessor.HttpContext?
+        .User
+        .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim == null)
+        {
+            throw new Exception("User is not authenticated.");
+        }
+        var userId = Guid.Parse(userIdClaim);
+        var bookings = await _context.Bookings
+            .AsNoTracking()
+            .Include(b => b.Event)
+            .Where(b => b.UserId == userId)
+            .ToListAsync();
+        return bookings.Select(booking => new BookingDTO
+        {
+            Id = booking.Id,
+            EventId = booking.EventId,
+            EventTitle = booking.Event.Title,
+            NumberOfTickets = booking.NumberOfTickets,
+            TotalCost = booking.TotalCost,
+            Status = booking.Status,
+            CreatedAt = booking.CreatedAt,
+            ExpiresAt = booking.ExpiresAt
+        });
     }
 
-    public Task<BookingDTO> GetBookingByIdAsync(int id)
+    public async Task<BookingDTO?> GetBookingByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var userIdClaim = _httpContextAccessor.HttpContext?
+        .User
+        .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim == null)
+        {
+            throw new Exception("User is not authenticated.");
+        }
+        var userId = Guid.Parse(userIdClaim);
+        var booking  =await _context.Bookings
+        .AsNoTracking()
+        .Include(b => b.Event)
+        .Where(b => b.Id == id && b.UserId == userId)
+        .FirstOrDefaultAsync();
+        if (booking == null)
+        {
+            return null;
+        }
+        return new BookingDTO
+        {
+            Id = booking.Id,
+            EventId = booking.EventId,
+            EventTitle = booking.Event.Title,
+            NumberOfTickets = booking.NumberOfTickets,
+            TotalCost = booking.TotalCost,
+            Status = booking.Status,
+            CreatedAt = booking.CreatedAt,
+            ExpiresAt = booking.ExpiresAt
+        };
+       
     }
 }
