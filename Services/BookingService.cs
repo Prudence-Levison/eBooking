@@ -41,8 +41,20 @@ public class BookingService:IBookingService
         {
             throw new Exception("Event not found.");
         }
-
-
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        var affectedRows = await _context.Bookings
+        .Where(b => b.Id == id && b.UserId == userId && b.Status == eBooking.Enums.BookingStatus.Pending)
+        .ExecuteUpdateAsync(setters => setters
+        .SetProperty(b => b.Status, b => eBooking.Enums.BookingStatus.Cancelled));
+        if (affectedRows == 0)
+        {
+            throw new Exception("Booking not found or already cancelled.");
+        }
+        eventItem.AvailableTickets += booking.NumberOfTickets;
+        eventItem.AvailableSeats += booking.NumberOfTickets;
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+        
     }
 
     public async Task<BookingDTO> CreateBookingAsync(CreateBookingDTO bookingDto)

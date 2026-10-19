@@ -42,6 +42,12 @@ namespace eBooking.Controllers
             }
             return Ok(bookings);  
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> CancelBooking(int id)
+        {
+            await _bookingService.CancelBookingAsync(id);
+            return Ok();
+        }
     }
     
 }
