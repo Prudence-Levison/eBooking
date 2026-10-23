@@ -23,6 +23,6 @@ namespace eBooking.Domain
         public required string PaymentMethod { get; set; }
         public string? Description { get; set; }
         public DateTime TransactionDate { get; set; } 
- 
+        public required string ReferenceNumber { get; set; } // Unique reference number for the transaction, useful for tracking and reconciliation.
     }
 }

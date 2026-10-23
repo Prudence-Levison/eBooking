@@ -5,11 +5,12 @@ namespace eBooking.Domain
     public class Payment
     {
         public int Id { get; set; }
+
         public int BookingId { get; set; }
 
         public Booking? Booking { get; set; } // Navigation property to access the associated booking details. 
 
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public int EventId { get; set; }// I wondered if there should be a relationship between payment and Events directly seeing as we have a relationship between payment and booking and there is an relationship between events and booking.
 

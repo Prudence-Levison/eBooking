@@ -12,6 +12,8 @@ namespace eBooking.Domain
         public decimal TotalCost { get; set; }
         public BookingStatus Status { get; set; } // Confirmed, Cancelled, Pending
         public DateTime CreatedAt { get; set; }
+
+        public DateTime ExpiresAt { get; set; }
         
     }
 }

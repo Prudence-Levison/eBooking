@@ -151,7 +151,7 @@ namespace eBooking.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Wallets");
+                    b.ToTable("Wallets", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.ApplicationRole", b =>
@@ -193,6 +193,9 @@ namespace eBooking.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("NumberOfTickets")
                         .HasColumnType("INTEGER");
 
@@ -211,7 +214,7 @@ namespace eBooking.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.Event", b =>
@@ -239,6 +242,10 @@ namespace eBooking.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("OrganizerId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
@@ -259,7 +266,9 @@ namespace eBooking.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.HasIndex("OrganizerId");
+
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.TransactionHistory", b =>
@@ -281,6 +290,10 @@ namespace eBooking.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReferenceNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -308,7 +321,7 @@ namespace eBooking.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("TransactionHistories");
+                    b.ToTable("TransactionHistories", (string)null);
                 });
 
             modelBuilder.Entity("eBooking.Domain.User", b =>
@@ -455,6 +468,17 @@ namespace eBooking.Migrations
                     b.Navigation("Event");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("eBooking.Domain.Event", b =>
+                {
+                    b.HasOne("eBooking.Domain.User", "Organizer")
+                        .WithMany()
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organizer");
                 });
 
             modelBuilder.Entity("eBooking.Domain.TransactionHistory", b =>
